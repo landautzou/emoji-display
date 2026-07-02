@@ -6,6 +6,11 @@ Built using **MediaPipe** for landmark detection and **OpenCV** for real-time vi
 
 ---
 
+## Demo
+![Emoji Detection Demo](emoji_reactor_demo.gif)
+
+---
+
 ## Features
 
 - Real-time webcam-based processing
