@@ -6,6 +6,7 @@ Real-time emoji display based on camera pose and facial expression detection.
 import cv2
 import mediapipe as mp
 import numpy as np
+import time
 
 # initialize MediaPipe
 mp_pose = mp.solutions.pose
@@ -72,6 +73,9 @@ print("  Straight face for neutral emoji")
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose, \
      mp_face_mesh.FaceMesh(max_num_faces=1, min_detection_confidence=0.5) as face_mesh:
 
+    prev_time = time.time()
+    fps = 0
+
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
@@ -137,9 +141,25 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         cv2.putText(camera_frame_resized, 'Press "q" to quit', (10, WINDOW_HEIGHT - 20),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2, cv2.LINE_AA)
 
+        current_time = time.time()
+        fps = 1.0 / (current_time - prev_time)
+        prev_time = current_time
+
         cv2.imshow('Camera Feed', camera_frame_resized)
         cv2.imshow('Emoji Output', emoji_to_display)
+        cv2.putText(
+            camera_frame_resized,
+            f"FPS: {fps:.1f}",
+            (10, 60),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            (0, 255, 0),
+            2,
+            cv2.LINE_AA
+        )
 
+        cv2.imshow('Camera Feed', camera_frame_resized)
+        
         if cv2.waitKey(5) & 0xFF == ord('q'):
             break
 
